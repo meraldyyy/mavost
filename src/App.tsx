@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Home from './pages/Home';
 import RecentWork from './pages/RecentWork';
+import ProjectDetail from './pages/ProjectDetail';
 import LoadingSplash from './components/LoadingSplash';
 import CustomCursor from './components/CustomCursor';
 
@@ -51,6 +52,14 @@ export default function App() {
             element={
               <PageTransition>
                 <RecentWork />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/work/:slug"
+            element={
+              <PageTransition>
+                <ProjectDetail />
               </PageTransition>
             }
           />

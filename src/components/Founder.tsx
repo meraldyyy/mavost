@@ -1,7 +1,7 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Code, Layout, Database, Server, ArrowUpRight } from 'lucide-react';
-import founder from "../assets/founder.jpeg"
+import founder from "../assets/founder.webp"
 
 
 const skills = [

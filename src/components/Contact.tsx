@@ -13,8 +13,8 @@ const contactItems = [
   {
     icon: Mail,
     label: 'Email',
-    value: 'meraldyridho@gmail.com',
-    href: 'mailto:meraldyridho@gmail.com',
+    value: 'wearemavost@gmail.com',
+    href: 'mailto:wearemavost@gmail.com',
   },
 ];
 
@@ -38,6 +38,8 @@ const budgets = [
   'Rp7.999.000+',
   "Let's Discuss",
 ];
+
+const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined;
 
 type FormState = {
   name: string;
@@ -86,6 +88,7 @@ export default function Contact() {
   const [errors, setErrors] = useState<Errors>({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const validate = () => {
     const errs: Errors = {};
@@ -105,10 +108,39 @@ export default function Contact() {
       return;
     }
     setErrors({});
+    setSubmitError('');
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    setSubmitted(true);
+
+    if (!FORMSPREE_ENDPOINT) {
+      setSubmitError('Form belum terhubung. Tambahkan VITE_FORMSPREE_ENDPOINT terlebih dahulu.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...form,
+          _subject: `New inquiry from ${form.name}`,
+          _replyto: form.email,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Formspree request failed');
+      }
+
+      setSubmitted(true);
+    } catch {
+      setSubmitError('Inquiry gagal dikirim. Coba lagi atau hubungi kami lewat WhatsApp.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass =
@@ -244,6 +276,7 @@ export default function Contact() {
                 <button
                   onClick={() => {
                     setSubmitted(false);
+                    setSubmitError('');
                     setForm({ name: '', email: '', projectType: '', budget: '', message: '' });
                   }}
                   className="mt-2 text-sm text-primary-400 hover:underline font-medium"
@@ -310,6 +343,12 @@ export default function Contact() {
                     className={`${inputClass} resize-none ${errors.message ? 'border-red-500/60' : ''}`}
                   />
                 </Field>
+
+                {submitError && (
+                  <p role="alert" className="text-sm text-red-400">
+                    {submitError}
+                  </p>
+                )}
 
                 <motion.button
                   type="submit"

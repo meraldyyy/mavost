@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f4f0e8"/>
+  <circle cx="1080" cy="90" r="260" fill="#863bff" opacity=".12"/>
+  <text x="80" y="285" fill="#17151f" font-family="Arial, Helvetica, sans-serif" font-size="96" font-weight="900">mavost<tspan fill="#863bff">.id</tspan></text>
+  <text x="86" y="370" fill="#514d5b" font-family="Arial, Helvetica, sans-serif" font-size="30">Premium web design &amp; development studio</text>
+  <rect x="86" y="430" width="90" height="8" rx="4" fill="#863bff"/>
+</svg>

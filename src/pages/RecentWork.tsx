@@ -4,74 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-
-const allProjects = [
- {
-    id: 1,
-    title: 'Tenerres Sablon & Merchandise',
-    description: 'Premium interior design agency with immersive scroll experience.',
-    category: 'Landing Page',
-    year: '2026',
-    image: './src/assets/tenerres.png',
-    span: 'lg:col-span-7 lg:row-span-2',
-    tall: true,
-  },
-  {
-    id: 2,
-    title: 'Mbangun Lab',
-    description: 'WebStore For Chemical Distributor',
-    category: 'Landing Page',
-    year: '2026',
-    image: './src/assets/mbangun.png',
-    span: 'lg:col-span-5',
-  },
-  {
-    id: 3,
-    title: 'Diego Firdaus',
-    description: 'Personal branding site for a Photographer & Videographer.',
-    category: 'Personal Branding',
-    year: '2026',
-    image: './src/assets/diego.png',
-    span: 'lg:col-span-5',
-  },
-  {
-    id: 4,
-    title: 'Kebab Monster',
-    description: 'Most Liked Kebab Franchise',
-    category: 'Website',
-    year: '2026',
-     image: './src/assets/kebab.png',
-    span: 'lg:col-span-4',
-  },
-  {
-    id: 5,
-    title: 'Joes Family Plumbing Inc.',
-    description: 'Plumbing that serve like a family',
-    category: 'Company Profile',
-    year: '2026',
-   image: './src/assets/joes.png',
-    span: 'lg:col-span-4',
-  },
-  {
-    id: 6,
-    title: 'Hayatun Tour',
-    description: 'Umrah & Hajj Plus .',
-    category: 'Company Profile',
-    year: '2026',
-   image: './src/assets/hayatun.png',
-    span: 'lg:col-span-4',
-  },
-  {
-    id: 7,
-    title: 'Ioni Jaya',
-    description: 'IT equipment and service provider.',
-    category: 'Company Profile',
-    image: './src/assets/ioni.png',
-    year: '2026',
-    span: 'lg:col-span-12',
-  },
-  
-];
+import SEO from '../components/SEO';
+import { projects } from '../projects';
 
 const categories = ['All', 'Landing Page', 'Company Profile', 'Personal Branding', 'Website Redesign'];
 
@@ -80,11 +14,28 @@ export default function RecentWork() {
 
   const filtered =
     activeFilter === 'All'
-      ? allProjects
-      : allProjects.filter((p) => p.category === activeFilter);
+      ? projects
+      : projects.filter((p) => p.category === activeFilter);
 
   return (
     <div className="relative min-h-screen bg-bone-100">
+      <SEO
+        title="Recent Work | Mavost Web Design & Development"
+        description="Explore selected landing pages, company profiles, and personal branding websites designed and developed by Mavost."
+        path="/work"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: 'Recent Work | Mavost',
+          description: 'Selected web design and development projects by Mavost.',
+          url: 'https://mavost.id/work',
+          isPartOf: {
+            '@type': 'WebSite',
+            name: 'Mavost',
+            url: 'https://mavost.id/',
+          },
+        }}
+      />
       <Navbar />
 
       {/* Hero */}
@@ -151,7 +102,7 @@ export default function RecentWork() {
       </div>
 
       {/* Grid — bento */}
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-10 pb-24">
+      <main className="max-w-[1400px] mx-auto px-6 lg:px-10 pb-24">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeFilter}
@@ -161,21 +112,17 @@ export default function RecentWork() {
             transition={{ duration: 0.3 }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-5 auto-rows-[minmax(0,1fr)]"
           >
-            {filtered.map((project, i) => (
-              <motion.a
+            {filtered.map((project) => (
+              <Link
                 key={project.id}
-                href="#"
-                onClick={(e) => e.preventDefault()}
+                to={`/work/${project.slug}`}
                 data-cursor
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06, duration: 0.5 }}
-                className={`group relative ${project.span} overflow-hidden rounded-2xl bg-ink-900 cursor-pointer`}
+                className={`group relative ${project.span} block overflow-hidden rounded-2xl bg-ink-900 cursor-pointer`}
               >
                 <div className={`relative w-full ${project.tall ? 'h-72 sm:h-96 lg:h-full lg:min-h-[460px]' : 'h-60 sm:h-64'} overflow-hidden`}>
                   <img
                     src={project.image}
-                    alt={project.title}
+                    alt={`${project.title} website project by Mavost`}
                     className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
                     loading="lazy"
                   />
@@ -208,7 +155,7 @@ export default function RecentWork() {
                     </div>
                   </div>
                 </div>
-              </motion.a>
+              </Link>
             ))}
           </motion.div>
         </AnimatePresence>
@@ -218,7 +165,7 @@ export default function RecentWork() {
             No projects in this category yet.
           </div>
         )}
-      </div>
+      </main>
 
       <Footer />
     </div>

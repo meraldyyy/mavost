@@ -122,10 +122,10 @@ export default function Hero() {
               variants={itemVariants}
               className="lg:col-span-9 font-satoshi font-black text-[13vw] sm:text-[11vw] lg:text-[8.5vw] xl:text-[7.8vw] leading-[0.92] tracking-tightest text-ink-900 text-balance"
             >
-              Create,
+              Web Design &amp; Development
               <br />
               <span className="inline-block">
-                Inspire, <span className="ink-accent">Repeat</span>
+                for <span className="ink-accent">ambitious brands</span>
                 <span className="text-primary-600">.</span>
               </span>
             </motion.h1>
