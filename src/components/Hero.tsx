@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { ArrowUpRight, ArrowDown } from 'lucide-react';
 
 const marqueeItems = [
@@ -55,7 +56,7 @@ function MagneticButton({
   );
 
   if (href) {
-    return <a href={href}>{inner}</a>;
+    return <Link to={href}>{inner}</Link>;
   }
   return inner;
 }

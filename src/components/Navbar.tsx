@@ -74,7 +74,7 @@ export default function Navbar() {
           {/* CTA + Mobile Toggle */}
           <div className="flex items-center gap-4">
             <a
-              href="https://wa.me/491047120138021"
+              href="https://wa.me/6282175495541"
               target="_blank"
               rel="noopener noreferrer"
               data-cursor
@@ -120,7 +120,7 @@ export default function Navbar() {
                 </motion.a>
               ))}
               <motion.a
-                href="https://wa.me/491047120138021"
+                href="https://wa.me/6282175495541"
                 target="_blank"
                 rel="noopener noreferrer"
                 initial={{ opacity: 0, x: -20 }}

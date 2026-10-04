@@ -7,7 +7,7 @@ const contactItems = [
   {
     icon: MessageCircle,
     label: 'WhatsApp',
-    value: '+62 821 7549 5541',
+    value: '082175495541',
     href: 'https://wa.me/6282175495541',
   },
   {

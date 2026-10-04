@@ -39,7 +39,7 @@ export default function Footer() {
               </h3>
             </div>
             <motion.a
-              href="https://wa.me/491047120138021"
+              href="https://wa.me/6282175495541"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.04 }}
