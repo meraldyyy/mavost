@@ -8,6 +8,7 @@ import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO';
 import { useLanguage } from '../i18n';
+import founderPhoto from '../assets/founder.webp';
 
 export default function Home() {
   const { language } = useLanguage();
@@ -33,18 +34,42 @@ export default function Home() {
           '@graph': [
             {
               '@type': 'Organization',
+              '@id': 'https://mavost.id/#organization',
               name: 'Mavost',
+              alternateName: ['Mavost Design Studio', 'mavost.id'],
               url: 'https://mavost.id/',
-              logo: 'https://mavost.id/favicon.svg',
+              logo: 'https://mavost.id/Mavost.id%20-%201.png',
+              description: 'Mavost is a web design and development studio founded and led by Meraldy Ridho Fadillah.',
+              foundingDate: '2024',
+              founder: { '@id': 'https://mavost.id/#meraldy-ridho-fadillah' },
               sameAs: [
                 'https://instagram.com/mavost.id',
                 'https://facebook.com/mavost.id',
               ],
             },
             {
+              '@type': 'Person',
+              '@id': 'https://mavost.id/#meraldy-ridho-fadillah',
+              name: 'Meraldy Ridho Fadillah',
+              givenName: 'Meraldy',
+              familyName: 'Ridho Fadillah',
+              jobTitle: 'Founder and Frontend Web Developer',
+              url: 'https://mavost.id/en#founder',
+              image: `https://mavost.id${founderPhoto}`,
+              worksFor: { '@id': 'https://mavost.id/#organization' },
+              sameAs: [
+                'https://instagram.com/mrldyrdh',
+                'https://linkedin.com/meraldy-ridho-fadillah',
+                'https://github.com/meraldyyy',
+              ],
+            },
+            {
               '@type': 'WebSite',
+              '@id': 'https://mavost.id/#website',
               name: 'Mavost',
               url: 'https://mavost.id/',
+              publisher: { '@id': 'https://mavost.id/#organization' },
+              about: { '@id': 'https://mavost.id/#organization' },
             },
           ],
         }}

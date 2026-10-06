@@ -27,7 +27,7 @@ export default function Founder() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section className="py-24 lg:py-32 bg-bone-100 relative">
+    <section id="founder" className="py-24 lg:py-32 bg-bone-100 relative">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
         <motion.div
           ref={ref}
@@ -103,6 +103,10 @@ export default function Founder() {
             {/* Bio */}
             <p className="text-base text-ink-600 leading-relaxed max-w-xl">
               {t.founder.bio}
+            </p>
+
+            <p className="text-sm font-medium text-ink-800 max-w-xl">
+              {t.founder.foundedBy}
             </p>
 
             {/* Personal socials */}
