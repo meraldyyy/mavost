@@ -7,6 +7,7 @@ import {
   RefreshCw,
   ArrowUpRight,
 } from 'lucide-react';
+import { useLanguage } from '../i18n';
 
 const services = [
   {
@@ -147,6 +148,7 @@ function ServiceRow({
 }
 
 export default function Services() {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -163,19 +165,18 @@ export default function Services() {
         >
           <div className="lg:col-span-7">
             <div className="flex items-center gap-3 mb-6">
-              <span className="label text-primary-600">/ 02 — Services</span>
+              <span className="label text-primary-600">/ 02 — {t.services.label}</span>
               <span className="h-px w-10 bg-ink-300" />
             </div>
             <h2 className="font-satoshi font-black text-4xl lg:text-6xl text-ink-900 leading-[0.95] tracking-tightest text-balance">
-              What we build,
+              {t.services.headlineBefore}
               <br />
-              <span className="ink-accent">end to end</span>.
+              <span className="ink-accent">{t.services.headlineAccent}</span>.
             </h2>
           </div>
           <div className="lg:col-span-4 lg:col-start-9 flex items-end">
             <p className="text-base text-ink-600 leading-relaxed">
-              Four disciplines, one obsession. Websites that look premium and perform harder.
-              Every project is crafted with precision, purpose, and obsessive detail.
+              {t.services.description}
             </p>
           </div>
         </motion.div>
@@ -188,7 +189,11 @@ export default function Services() {
           className="border-t hairline"
         >
           {services.map((service, i) => (
-            <ServiceRow key={service.title} service={service} index={i} />
+            <ServiceRow
+              key={service.title}
+              service={{ ...service, ...t.services.items[i], tags: [...t.services.items[i].tags] }}
+              index={i}
+            />
           ))}
         </motion.div>
       </div>

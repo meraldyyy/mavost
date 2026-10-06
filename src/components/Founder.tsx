@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Code, Layout, Database, Server, ArrowUpRight } from 'lucide-react';
+import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { useLanguage } from '../i18n';
 import founder from "../assets/founder.webp"
 
 
@@ -12,8 +14,15 @@ const skills = [
   { icon: Database, name: 'Database' },
 ];
 
+const founderSocials = [
+  { icon: FaInstagram, label: 'Instagram', href: 'https://instagram.com/mrldyrdh' },
+  { icon: FaLinkedin, label: 'LinkedIn', href: 'https://linkedin.com/meraldy-ridho-fadillah' },
+  { icon: FaGithub, label: 'GitHub', href: 'https://github.com/meraldyyy' },
+];
+
 
 export default function Founder() {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -52,7 +61,7 @@ export default function Founder() {
                       <p className="font-satoshi font-black text-bone-50 text-lg leading-tight">
                         Meraldy Ridho Fadillah
                       </p>
-                      <p className="label text-bone-200/80 mt-1">Founder / Frontend Web Dev</p>
+                      <p className="label text-bone-200/80 mt-1">{t.founder.role}</p>
                     </div>
                     <span className="font-mono text-[0.65rem] text-bone-200/70">/001</span>
                   </div>
@@ -75,33 +84,50 @@ export default function Founder() {
             {/* Header */}
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <span className="label text-primary-600">/ 04 — The Founder</span>
+                <span className="label text-primary-600">/ 04 — {t.founder.label}</span>
                 <span className="h-px w-10 bg-ink-300" />
               </div>
               <h2 className="font-satoshi font-black text-3xl lg:text-5xl text-ink-900 leading-[0.98] tracking-tightest text-balance">
-                Built by someone who{' '}
-                <span className="ink-accent">cares about results</span>.
+                {t.founder.headlineBefore}{' '}
+                <span className="ink-accent">{t.founder.headlineAccent}</span>.
               </h2>
             </div>
 
             {/* Quote block */}
             <blockquote className="relative pl-6 border-l-2 border-primary-600">
               <p className="font-satoshi font-medium text-lg lg:text-xl text-ink-700 leading-relaxed italic">
-                "I founded mavost.id to help businesses and creators elevate their online
-                presence with premium digital experiences that actually drive growth."
+                "{t.founder.quote}"
               </p>
             </blockquote>
 
             {/* Bio */}
             <p className="text-base text-ink-600 leading-relaxed max-w-xl">
-              Hi, I'm Meraldy, a web developer focused on building high-performance,
-              conversion-focused websites. Every project is crafted with precision,
-              purpose, and obsessive attention to detail.
+              {t.founder.bio}
             </p>
+
+            {/* Personal socials */}
+            <div>
+              <p className="label text-ink-500 mb-4">{t.founder.findMe}</p>
+              <div className="flex flex-wrap gap-3">
+                {founderSocials.map(({ icon: Icon, label, href }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-cursor
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-bone-50 border hairline text-sm text-ink-800 font-medium hover:border-ink-900 hover:bg-ink-900 hover:text-bone-50 transition-all duration-200"
+                  >
+                    <Icon size={15} />
+                    {label}
+                  </a>
+                ))}
+              </div>
+            </div>
 
             {/* Tech Stack */}
             <div>
-              <p className="label text-ink-500 mb-4">Tech Stack</p>
+              <p className="label text-ink-500 mb-4">{t.founder.techStack}</p>
               <div className="flex flex-wrap gap-3">
                 {skills.map(({ icon: Icon, name }) => (
                   <div
@@ -126,7 +152,7 @@ export default function Founder() {
               data-cursor
               className="group inline-flex items-center gap-3 px-7 py-4 bg-ink-900 text-bone-50 font-medium rounded-full hover:bg-primary-600 transition-colors duration-300"
             >
-              Work With Me
+              {t.founder.workWithMe}
               <span className="w-8 h-8 rounded-full bg-bone-50/10 flex items-center justify-center group-hover:rotate-45 transition-transform duration-300">
                 <ArrowUpRight size={16} />
               </span>

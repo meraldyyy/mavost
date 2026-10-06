@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function CustomCursor() {
-  const [pos, setPos] = useState({ x: -100, y: -100 });
-  const [ringPos, setRingPos] = useState({ x: -100, y: -100 });
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
   const [hovering, setHovering] = useState(false);
   const [hidden, setHidden] = useState(true);
 
@@ -14,25 +14,51 @@ export default function CustomCursor() {
     let ty = -100;
     let rx = -100;
     let ry = -100;
+    let isHovering = false;
+    let isHidden = true;
 
     const onMove = (e: MouseEvent) => {
-      setHidden(false);
       tx = e.clientX;
       ty = e.clientY;
-      setPos({ x: tx, y: ty });
 
-      const target = e.target as HTMLElement;
+      if (isHidden) {
+        isHidden = false;
+        setHidden(false);
+      }
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${tx}px, ${ty}px, 0) translate(-50%, -50%)`;
+      }
+
+      const target = e.target as Element;
       const interactive = target.closest('a, button, input, textarea, select, [data-cursor]');
-      setHovering(!!interactive);
+      const nextHovering = !!interactive;
+      if (nextHovering !== isHovering) {
+        isHovering = nextHovering;
+        setHovering(nextHovering);
+      }
+
+      if (!raf) raf = requestAnimationFrame(loop);
     };
 
-    const onLeave = () => setHidden(true);
+    const onLeave = () => {
+      if (!isHidden) {
+        isHidden = true;
+        setHidden(true);
+      }
+    };
 
     const loop = () => {
       rx += (tx - rx) * 0.18;
       ry += (ty - ry) * 0.18;
-      setRingPos({ x: rx, y: ry });
-      raf = requestAnimationFrame(loop);
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
+      }
+
+      if (Math.abs(tx - rx) > 0.1 || Math.abs(ty - ry) > 0.1) {
+        raf = requestAnimationFrame(loop);
+      } else {
+        raf = 0;
+      }
     };
 
     window.addEventListener('mousemove', onMove);
@@ -51,8 +77,10 @@ export default function CustomCursor() {
   return (
     <>
       <div
-        className="pointer-events-none fixed z-[9999] hidden md:block"
-        style={{ left: pos.x, top: pos.y, transform: 'translate(-50%, -50%)' }}
+        ref={dotRef}
+        className={`pointer-events-none fixed z-[9999] hidden md:block transition-opacity duration-150 ${
+          hidden ? 'opacity-0' : 'opacity-100'
+        }`}
       >
         <div
           className={`rounded-full bg-primary-600 transition-all duration-150 ${
@@ -61,8 +89,10 @@ export default function CustomCursor() {
         />
       </div>
       <div
-        className="pointer-events-none fixed z-[9998] hidden md:block"
-        style={{ left: ringPos.x, top: ringPos.y, transform: 'translate(-50%, -50%)' }}
+        ref={ringRef}
+        className={`pointer-events-none fixed z-[9998] hidden md:block transition-opacity duration-150 ${
+          hidden ? 'opacity-0' : 'opacity-100'
+        }`}
       >
         <div
           className={`rounded-full border border-ink-900 transition-all duration-200 ease-out ${

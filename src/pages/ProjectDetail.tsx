@@ -5,9 +5,11 @@ import { ArrowLeft, ArrowUpRight, Check, ChevronLeft, ChevronRight } from 'lucid
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO';
-import { getProjectBySlug, projects } from '../projects';
+import { getLocalizedProject, getProjectBySlug, projects } from '../projects';
+import { useLanguage } from '../i18n';
 
 export default function ProjectDetail() {
+  const { language, t } = useLanguage();
   const { slug } = useParams<{ slug: string }>();
   const project = getProjectBySlug(slug ?? '');
 
@@ -16,26 +18,32 @@ export default function ProjectDetail() {
   }, [slug]);
 
   if (!project) {
-    return <Navigate to="/work" replace />;
+    return <Navigate to={`/${language}/work`} replace />;
   }
 
   const projectIndex = projects.findIndex((item) => item.slug === project.slug);
-  const previousProject = projects[projectIndex - 1];
-  const nextProject = projects[projectIndex + 1];
+  const localizedProject = getLocalizedProject(project, language);
+  const previousProject = projects[projectIndex - 1]
+    ? getLocalizedProject(projects[projectIndex - 1], language)
+    : undefined;
+  const nextProject = projects[projectIndex + 1]
+    ? getLocalizedProject(projects[projectIndex + 1], language)
+    : undefined;
 
   return (
     <div className="relative min-h-screen bg-bone-100">
       <SEO
-        title={`${project.title} | Mavost`}
-        description={project.overview}
-        path={`/work/${project.slug}`}
-        image={project.image}
+        title={`${localizedProject.title} | Mavost`}
+        description={localizedProject.overview}
+        path={`/${language}/work/${project.slug}`}
+        language={language}
+        image={localizedProject.image}
         structuredData={{
           '@context': 'https://schema.org',
           '@type': 'CreativeWork',
-          name: project.title,
-          description: project.overview,
-          image: project.image,
+          name: localizedProject.title,
+          description: localizedProject.overview,
+          image: localizedProject.image,
           creator: {
             '@type': 'Person',
             name: 'Meraldy Ridho Fadillah',
@@ -48,11 +56,11 @@ export default function ProjectDetail() {
         <section className="pt-28 lg:pt-36 pb-14 lg:pb-20">
           <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
             <Link
-              to="/work"
+              to={`/${language}/work`}
               className="inline-flex items-center gap-2 text-sm text-ink-600 hover:text-primary-600 transition-colors duration-200 mb-12 group"
             >
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform duration-200" />
-              Back to Work
+              {t.detail.backToWork}
             </Link>
 
             <motion.div
@@ -63,17 +71,17 @@ export default function ProjectDetail() {
             >
               <div className="lg:col-span-8">
                 <div className="flex items-center gap-3 mb-6">
-                  <span className="label text-primary-600">/ {project.category}</span>
+                  <span className="label text-primary-600">/ {localizedProject.category}</span>
                   <span className="h-px w-10 bg-ink-300" />
                   <span className="font-mono text-xs text-ink-400">{project.year}</span>
                 </div>
                 <h1 className="font-satoshi font-black text-5xl sm:text-6xl lg:text-8xl text-ink-900 leading-[0.9] tracking-tightest text-balance">
-                  {project.title}
+                  {localizedProject.title}
                   <span className="text-primary-600">.</span>
                 </h1>
               </div>
               <p className="lg:col-span-4 text-base lg:text-lg text-ink-600 leading-relaxed">
-                {project.overview}
+                {localizedProject.overview}
               </p>
             </motion.div>
           </div>
@@ -88,24 +96,24 @@ export default function ProjectDetail() {
               className="overflow-hidden rounded-2xl bg-ink-900"
             >
               <img
-                src={project.image}
-                alt={`${project.title} project preview`}
+                src={localizedProject.image}
+                alt={`${localizedProject.title} project preview`}
                 className="w-full aspect-[16/8] object-cover object-center"
               />
             </motion.div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-px mt-5 overflow-hidden rounded-2xl bg-ink-300/50">
               <div className="bg-bone-50 p-5 lg:p-7">
-                <p className="label text-ink-400 mb-3">Role</p>
-                <p className="font-satoshi font-bold text-lg text-ink-900">{project.role}</p>
+                <p className="label text-ink-400 mb-3">{t.detail.role}</p>
+                <p className="font-satoshi font-bold text-lg text-ink-900">{localizedProject.role}</p>
               </div>
               <div className="bg-bone-50 p-5 lg:p-7">
-                <p className="label text-ink-400 mb-3">Year</p>
-                <p className="font-satoshi font-bold text-lg text-ink-900">{project.year}</p>
+                <p className="label text-ink-400 mb-3">{t.detail.year}</p>
+                <p className="font-satoshi font-bold text-lg text-ink-900">{localizedProject.year}</p>
               </div>
               <div className="bg-bone-50 p-5 lg:p-7">
-                <p className="label text-ink-400 mb-3">Category</p>
-                <p className="font-satoshi font-bold text-lg text-ink-900">{project.category}</p>
+                <p className="label text-ink-400 mb-3">{t.detail.category}</p>
+                <p className="font-satoshi font-bold text-lg text-ink-900">{localizedProject.category}</p>
               </div>
             </div>
           </div>
@@ -114,25 +122,25 @@ export default function ProjectDetail() {
         <section className="py-16 lg:py-24 bg-ink-900 text-bone-50">
           <div className="max-w-[1400px] mx-auto px-6 lg:px-10 grid lg:grid-cols-12 gap-12 lg:gap-20">
             <div className="lg:col-span-4">
-              <p className="label text-primary-400 mb-5">/ Project Details</p>
+              <p className="label text-primary-400 mb-5">/ {t.detail.projectDetails}</p>
               <h2 className="font-satoshi font-black text-4xl lg:text-5xl leading-[0.95] tracking-tightest">
-                What I handled
+                {t.detail.handled}
                 <span className="text-primary-400">.</span>
               </h2>
             </div>
 
             <div className="lg:col-span-8">
               <div className="pb-10 border-b border-bone-50/15">
-                <p className="label text-bone-400 mb-4">Overview</p>
+                <p className="label text-bone-400 mb-4">{t.detail.overview}</p>
                 <p className="text-xl lg:text-2xl text-bone-100 leading-relaxed max-w-3xl">
-                  {project.overview}
+                  {localizedProject.overview}
                 </p>
               </div>
 
               <div className="py-10 border-b border-bone-50/15">
-                <p className="label text-bone-400 mb-5">Key Contributions</p>
+                <p className="label text-bone-400 mb-5">{t.detail.contributions}</p>
                 <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-5">
-                  {project.contributions.map((contribution) => (
+                  {localizedProject.contributions.map((contribution) => (
                     <li key={contribution} className="flex gap-3 text-bone-200 leading-relaxed">
                       <Check size={18} className="shrink-0 mt-1 text-primary-400" />
                       <span>{contribution}</span>
@@ -142,9 +150,9 @@ export default function ProjectDetail() {
               </div>
 
               <div className="pt-10">
-                <p className="label text-bone-400 mb-5">Tech Stack</p>
+                <p className="label text-bone-400 mb-5">{t.detail.techStack}</p>
                 <div className="flex flex-wrap gap-2">
-                  {project.tech.map((technology) => (
+                  {localizedProject.tech.map((technology) => (
                     <span
                       key={technology}
                       className="px-4 py-2 rounded-full border border-bone-50/20 text-sm text-bone-100"
@@ -162,16 +170,16 @@ export default function ProjectDetail() {
           <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <p className="label text-primary-600 mb-3">/ Continue Exploring</p>
+                <p className="label text-primary-600 mb-3">/ {t.detail.continueExploring}</p>
                 <h2 className="font-satoshi font-black text-3xl lg:text-5xl text-ink-900 tracking-tightest">
-                  More projects<span className="text-primary-600">.</span>
+                  {t.detail.moreProjects}<span className="text-primary-600">.</span>
                 </h2>
               </div>
               <Link
-                to="/work"
+                to={`/${language}/work`}
                 className="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-ink-700 hover:text-primary-600 transition-colors"
               >
-                View all <ArrowUpRight size={16} />
+                {t.detail.viewAll} <ArrowUpRight size={16} />
               </Link>
             </div>
 
@@ -179,7 +187,7 @@ export default function ProjectDetail() {
               {[previousProject, nextProject].filter(Boolean).map((item) => (
                 <Link
                   key={item!.id}
-                  to={`/work/${item!.slug}`}
+                  to={`/${language}/work/${item!.slug}`}
                   className="group relative min-h-56 overflow-hidden rounded-2xl bg-ink-900"
                 >
                   <img
@@ -203,13 +211,13 @@ export default function ProjectDetail() {
 
             <div className="mt-8 flex justify-between gap-4">
               {previousProject ? (
-                <Link to={`/work/${previousProject.slug}`} className="inline-flex items-center gap-2 text-sm text-ink-600 hover:text-primary-600 transition-colors">
-                  <ChevronLeft size={16} /> Previous project
+                <Link to={`/${language}/work/${previousProject.slug}`} className="inline-flex items-center gap-2 text-sm text-ink-600 hover:text-primary-600 transition-colors">
+                  <ChevronLeft size={16} /> {t.detail.previous}
                 </Link>
               ) : <span />}
               {nextProject && (
-                <Link to={`/work/${nextProject.slug}`} className="inline-flex items-center gap-2 text-sm text-ink-600 hover:text-primary-600 transition-colors">
-                  Next project <ChevronRight size={16} />
+                <Link to={`/${language}/work/${nextProject.slug}`} className="inline-flex items-center gap-2 text-sm text-ink-600 hover:text-primary-600 transition-colors">
+                  {t.detail.next} <ChevronRight size={16} />
                 </Link>
               )}
             </div>

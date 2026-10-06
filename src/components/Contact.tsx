@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { MessageCircle, Mail, ArrowUpRight, CheckCircle } from "lucide-react";
-import { FaInstagram, FaLinkedin, FaGithub } from "react-icons/fa";
+import { FaFacebookF, FaInstagram } from "react-icons/fa";
+import { useLanguage } from '../i18n';
 
 const contactItems = [
   {
@@ -19,27 +20,12 @@ const contactItems = [
 ];
 
 const socials = [
-  { icon: FaInstagram, label: "Instagram", href: "https://instagram.com/mrldyrdh" },
-  { icon: FaLinkedin, label: "LinkedIn", href: "https://linkedin.com/meraldy-ridho-fadillah" },
-  { icon: FaGithub, label: "GitHub", href: "https://github.com/meraldyyy" },
-];
-
-const projectTypes = [
-  'Landing Page',
-  'Company Profile',
-  'Personal Branding',
-  'Website Redesign',
-  'Other',
-];
-
-const budgets = [
-  'Rp999.000 – Rp3.999.000',
-  'Rp3.999.000 – Rp7.999.000',
-  'Rp7.999.000+',
-  "Let's Discuss",
+  { icon: FaInstagram, label: "Instagram Mavost", href: "https://instagram.com/mavost.id" },
+  { icon: FaFacebookF, label: "Facebook Mavost", href: "https://facebook.com/mavost.id" },
 ];
 
 const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined;
+const FORMSPREE_ENDPOINT_PATTERN = /^https:\/\/formspree\.io\/f\/[\w-]+$/;
 
 type FormState = {
   name: string;
@@ -75,6 +61,7 @@ function Field({
 }
 
 export default function Contact() {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -89,14 +76,15 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [honeypot, setHoneypot] = useState('');
 
   const validate = () => {
     const errs: Errors = {};
-    if (!form.name.trim()) errs.name = 'Name is required.';
-    if (!form.email.trim()) errs.email = 'Email is required.';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Invalid email address.';
-    if (!form.projectType) errs.projectType = 'Please select a project type.';
-    if (!form.message.trim()) errs.message = 'Message is required.';
+    if (!form.name.trim()) errs.name = t.contact.nameRequired;
+    if (!form.email.trim()) errs.email = t.contact.emailRequired;
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = t.contact.invalidEmail;
+    if (!form.projectType) errs.projectType = t.contact.projectRequired;
+    if (!form.message.trim()) errs.message = t.contact.messageRequired;
     return errs;
   };
 
@@ -111,8 +99,8 @@ export default function Contact() {
     setSubmitError('');
     setLoading(true);
 
-    if (!FORMSPREE_ENDPOINT) {
-      setSubmitError('Form belum terhubung. Tambahkan VITE_FORMSPREE_ENDPOINT terlebih dahulu.');
+    if (!FORMSPREE_ENDPOINT || !FORMSPREE_ENDPOINT_PATTERN.test(FORMSPREE_ENDPOINT)) {
+      setSubmitError(t.contact.notConnected);
       setLoading(false);
       return;
     }
@@ -126,6 +114,7 @@ export default function Contact() {
         },
         body: JSON.stringify({
           ...form,
+          _gotcha: honeypot,
           _subject: `New inquiry from ${form.name}`,
           _replyto: form.email,
         }),
@@ -137,7 +126,7 @@ export default function Contact() {
 
       setSubmitted(true);
     } catch {
-      setSubmitError('Inquiry gagal dikirim. Coba lagi atau hubungi kami lewat WhatsApp.');
+      setSubmitError(t.contact.submitFailed);
     } finally {
       setLoading(false);
     }
@@ -159,19 +148,18 @@ export default function Contact() {
         >
           <div className="lg:col-span-7">
             <div className="flex items-center gap-3 mb-6">
-              <span className="label text-primary-600">/ 06 — Contact</span>
+              <span className="label text-primary-600">/ 06 — {t.contact.label}</span>
               <span className="h-px w-10 bg-ink-300" />
             </div>
             <h2 className="font-satoshi font-black text-4xl lg:text-6xl text-ink-900 leading-[0.95] tracking-tightest text-balance">
-              Let's build
+              {t.contact.headlineBefore}
               <br />
-              <span className="ink-accent">something great</span>.
+              <span className="ink-accent">{t.contact.headlineAccent}</span>.
             </h2>
           </div>
           <div className="lg:col-span-4 lg:col-start-9 flex items-end">
             <p className="text-base text-ink-600 leading-relaxed">
-              Tell us about your project. We'll get back to you within 24 hours
-              with next steps.
+              {t.contact.description}
             </p>
           </div>
         </motion.div>
@@ -184,7 +172,7 @@ export default function Contact() {
             transition={{ duration: 0.7, delay: 0.15 }}
             className="lg:col-span-5 bg-ink-900 rounded-2xl p-7 lg:p-8 flex flex-col"
           >
-            <p className="label text-primary-400 mb-8">Direct Channels</p>
+            <p className="label text-primary-400 mb-8">{t.contact.directChannels}</p>
 
             <div className="space-y-3 mb-8">
               {contactItems.map((item) => (
@@ -217,7 +205,7 @@ export default function Contact() {
 
             {/* Socials */}
             <div className="mb-8">
-              <p className="label text-bone-400 mb-4">Follow Us</p>
+              <p className="label text-bone-400 mb-4">{t.contact.followUs}</p>
               <div className="flex gap-3">
                 {socials.map((social) => (
                   <motion.a
@@ -247,7 +235,7 @@ export default function Contact() {
               className="mt-auto flex items-center justify-center gap-2.5 py-4 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-400 transition-colors duration-200"
             >
               <MessageCircle size={20} className="fill-current" />
-              Chat on WhatsApp
+              {t.contact.chatWhatsApp}
             </motion.a>
           </motion.div>
 
@@ -268,26 +256,27 @@ export default function Contact() {
                   <CheckCircle size={32} className="text-green-400" />
                 </div>
                 <h3 className="font-satoshi font-black text-2xl text-bone-50">
-                  Inquiry Sent!
+                  {t.contact.inquirySent}
                 </h3>
                 <p className="text-bone-300 max-w-sm">
-                  Thank you for reaching out. We'll get back to you within 24 hours.
+                  {t.contact.thankYou}
                 </p>
                 <button
                   onClick={() => {
                     setSubmitted(false);
                     setSubmitError('');
+                    setHoneypot('');
                     setForm({ name: '', email: '', projectType: '', budget: '', message: '' });
                   }}
                   className="mt-2 text-sm text-primary-400 hover:underline font-medium"
                 >
-                  Send another inquiry
+                  {t.contact.sendAnother}
                 </button>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} noValidate className="space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
-                  <Field label="Your Name" index="/001" error={errors.name}>
+                  <Field label={t.contact.yourName} index="/001" error={errors.name}>
                     <input
                       type="text"
                       value={form.name}
@@ -296,7 +285,7 @@ export default function Contact() {
                       className={`${inputClass} ${errors.name ? 'border-red-500/60' : ''}`}
                     />
                   </Field>
-                  <Field label="Email Address" index="/002" error={errors.email}>
+                  <Field label={t.contact.emailAddress} index="/002" error={errors.email}>
                     <input
                       type="email"
                       value={form.email}
@@ -308,38 +297,49 @@ export default function Contact() {
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-5">
-                  <Field label="Project Type" index="/003" error={errors.projectType}>
+                  <Field label={t.contact.projectType} index="/003" error={errors.projectType}>
                     <select
                       value={form.projectType}
                       onChange={(e) => setForm({ ...form, projectType: e.target.value })}
                       className={`${inputClass} ${errors.projectType ? 'border-red-500/60' : ''}`}
                     >
-                      <option value="">Select type...</option>
-                      {projectTypes.map((t) => (
-                        <option key={t} value={t}>{t}</option>
+                      <option value="">{t.contact.selectType}</option>
+                      {t.contact.projectTypes.map((projectType) => (
+                        <option key={projectType} value={projectType}>{projectType}</option>
                       ))}
                     </select>
                   </Field>
-                  <Field label="Budget Range" index="/004">
+                  <Field label={t.contact.budgetRange} index="/004">
                     <select
                       value={form.budget}
                       onChange={(e) => setForm({ ...form, budget: e.target.value })}
                       className={inputClass}
                     >
-                      <option value="">Select budget...</option>
-                      {budgets.map((b) => (
-                        <option key={b} value={b}>{b}</option>
+                      <option value="">{t.contact.selectBudget}</option>
+                      {t.contact.budgets.map((budget) => (
+                        <option key={budget} value={budget}>{budget}</option>
                       ))}
                     </select>
                   </Field>
                 </div>
 
-                <Field label="Message" index="/005" error={errors.message}>
+                <input
+                  type="text"
+                  name="_gotcha"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  className="hidden"
+                />
+
+                <Field label={t.contact.message} index="/005" error={errors.message}>
                   <textarea
                     rows={5}
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    placeholder="Tell us about your project, goals, and timeline..."
+                    placeholder={t.contact.messagePlaceholder}
                     className={`${inputClass} resize-none ${errors.message ? 'border-red-500/60' : ''}`}
                   />
                 </Field>
@@ -361,11 +361,11 @@ export default function Contact() {
                   {loading ? (
                     <>
                       <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                      Sending...
+                      {t.contact.sending}
                     </>
                   ) : (
                     <>
-                      Send Inquiry
+                      {t.contact.sendInquiry}
                       <ArrowUpRight size={18} className="group-hover:rotate-45 transition-transform duration-300" />
                     </>
                   )}

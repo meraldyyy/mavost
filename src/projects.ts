@@ -1,10 +1,11 @@
-import tenerres from './assets/tenerres.webp';
-import mbangun from './assets/mbangun.webp';
-import diego from './assets/diego.webp';
-import kebab from './assets/kebab.webp';
-import joes from './assets/joes.webp';
-import hayatun from './assets/hayatun.webp';
-import ioni from './assets/ioni.webp';
+import tenerres from './assets/optimized/tenerres.webp';
+import mbangun from './assets/optimized/mbangun.webp';
+import diego from './assets/optimized/diego.webp';
+import kebab from './assets/optimized/kebab.webp';
+import joes from './assets/optimized/joes.webp';
+import hayatun from './assets/optimized/hayatun.webp';
+import ioni from './assets/optimized/ioni.webp';
+import type { Language } from './i18n';
 
 export type Project = {
   id: number;
@@ -173,6 +174,141 @@ export const projects: Project[] = [
     ],
   },
 ];
+
+type ProjectCopy = Pick<Project, 'description' | 'category' | 'role' | 'overview' | 'contributions'>;
+
+const projectCopies: Record<string, Partial<Record<Language, Partial<ProjectCopy>>>> = {
+  'tenerres-sablon-merchandise': {
+    en: {
+      description: 'A clean and modern business website for a screen printing and merchandise brand.',
+      category: 'Landing Page',
+      role: 'Frontend Developer',
+      overview: 'A clean, modern website for a screen printing and merchandise business, built around the needs of its customers.',
+      contributions: [
+        'Developed the frontend with React and Vite.',
+        'Created a responsive layout with Tailwind CSS.',
+        'Structured the pages around the business requirements.',
+        'Built the catalog and services interface.',
+        'Prepared the project for deployment on Vercel or Netlify.',
+      ],
+    },
+    id: {
+      description: 'Website bisnis sablon dan merchandise dengan visual yang clean dan modern.',
+    },
+  },
+  'mbangun-lab': {
+    en: {
+      description: 'Laboratory product and e-commerce website.',
+      category: 'Landing Page',
+      role: 'Frontend Developer',
+      overview: 'A product catalog and shopping cart website for a laboratory supplies company.',
+      contributions: [
+        'Built a laboratory product catalog.',
+        'Displayed formula, CAS Number, grade, purity, storage, COA, and MSDS details.',
+        'Developed a shopping cart using LocalStorage.',
+        'Created a responsive interface for desktop and mobile.',
+        'Optimized the UI structure to make product information easy to understand.',
+      ],
+    },
+    id: {
+      description: 'Website produk laboratorium dan e-commerce.',
+    },
+  },
+  'diego-firdaus': {
+    en: {
+      description: 'Personal branding site for a photographer and videographer.',
+      category: 'Personal Branding',
+      role: 'Frontend Developer',
+      overview: 'A personal branding website for a photographer and videographer, focused on making visual work easy to explore.',
+      contributions: [
+        'Structured the pages around personal branding goals.',
+        'Developed a responsive interface for different screen sizes.',
+        'Created a layout that keeps the portfolio as the primary focus.',
+      ],
+    },
+    id: {
+      description: 'Website personal branding untuk fotografer dan videografer.',
+    },
+  },
+  'kebab-monster': {
+    en: {
+      description: 'Restaurant and branch information website.',
+      category: 'Website',
+      role: 'Frontend Developer',
+      overview: 'A responsive restaurant website featuring menus, branches, ordering services, and business information.',
+      contributions: [
+        'Developed the website with React and Vite.',
+        'Created a responsive UI for desktop and mobile.',
+        'Built Home, Menu, Branches, About Us, and Big Order pages.',
+        'Integrated ordering channels such as WhatsApp and food delivery platforms.',
+        'Presented location and branch count information in a structured way.',
+      ],
+    },
+    id: {
+      description: 'Website informasi restoran dan cabang.',
+    },
+  },
+  'joes-family-plumbing': {
+    en: {
+      description: 'A modern website redesign for a trusted plumbing business.',
+      category: 'Website Redesign',
+      role: 'Frontend Developer / UI Designer',
+      overview: 'A website redesign for a plumbing business, focused on a more modern, professional look that builds customer trust.',
+      contributions: [
+        'Analyzed the existing website structure and visual direction.',
+        'Designed a more modern visual concept.',
+        'Improved information hierarchy and calls to action.',
+        'Created a responsive layout for different screen sizes.',
+        'Aligned the design with the business character and decades of experience.',
+      ],
+    },
+    id: {
+      description: 'Redesign website modern untuk bisnis plumbing terpercaya.',
+    },
+  },
+  'hayatun-tour': {
+    en: {
+      description: 'Hajj and Umrah company profile with a premium visual direction.',
+      category: 'Company Profile',
+      role: 'Frontend Developer / UI Developer',
+      overview: 'A professional and trustworthy company profile website for a Hajj and Umrah travel service.',
+      contributions: [
+        'Designed the landing page structure and user flow.',
+        'Developed a responsive website with React and Tailwind CSS.',
+        'Created service, travel package, company information, and CTA sections.',
+        'Used navy, sand, gold, and emerald to create a premium feel.',
+        'Integrated a WhatsApp CTA to make prospect communication easier.',
+      ],
+    },
+    id: {
+      description: 'Company profile layanan perjalanan Haji dan Umrah dengan visual premium.',
+    },
+  },
+  'ioni-jaya': {
+    en: {
+      description: 'Company profile for an IT equipment and service provider.',
+      category: 'Company Profile',
+      role: 'Frontend Developer',
+      overview: 'A professional, modern, and responsive company profile website for IONI Jaya as its digital information hub.',
+      contributions: [
+        'Developed the company profile with React and Vite.',
+        'Created a responsive UI for desktop, tablet, and mobile.',
+        'Structured the pages around the company information needs.',
+        'Implemented the UI design and components with Tailwind CSS.',
+        'Optimized the experience to be informative, clean, and easy to navigate.',
+        'Prepared the website for deployment and domain or hosting management.',
+      ],
+    },
+    id: {
+      description: 'Company profile penyedia perangkat dan layanan IT.',
+    },
+  },
+};
+
+export function getLocalizedProject(project: Project, language: Language): Project {
+  const copy = projectCopies[project.slug]?.[language];
+  return copy ? { ...project, ...copy } : project;
+}
 
 export function getProjectBySlug(slug: string) {
   return projects.find((project) => project.slug === slug);

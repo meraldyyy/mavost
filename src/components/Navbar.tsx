@@ -1,21 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import { useLanguage } from '../i18n';
 
 const navLinks = [
-  { label: 'Home', href: '#home', index: '01' },
-  { label: 'Services', href: '#services', index: '02' },
-  { label: 'Portfolio', href: '#portfolio', index: '03' },
-  { label: 'Pricing', href: '#pricing', index: '04' },
-  { label: 'Contact', href: '#contact', index: '05' },
-];
+  { key: 'home', href: '#home', index: '01' },
+  { key: 'services', href: '#services', index: '02' },
+  { key: 'portfolio', href: '#portfolio', index: '03' },
+  { key: 'pricing', href: '#pricing', index: '04' },
+  { key: 'contact', href: '#contact', index: '05' },
+] as const;
 
 export default function Navbar() {
+  const { language, setLanguage, t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const isHome = location.pathname === '/';
+  const isHome = /^\/(en|id)\/?$/.test(location.pathname);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -43,7 +45,7 @@ export default function Navbar() {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-baseline gap-1 group" data-cursor>
+          <Link to={`/${language}`} className="flex items-baseline gap-1 group" data-cursor>
             <span className="font-satoshi font-black text-lg text-ink-900 tracking-tightest">
               mavost
             </span>
@@ -57,7 +59,7 @@ export default function Navbar() {
             {navLinks.map((link) => (
               <a
                 key={link.href}
-                href={isHome ? link.href : `/${link.href}`}
+                href={isHome ? link.href : `/${language}${link.href}`}
                 onClick={() => handleNavClick(link.href)}
                 data-cursor
                 className="group relative flex items-center gap-1.5 text-sm font-medium text-ink-700 hover:text-primary-600 transition-colors duration-200"
@@ -65,7 +67,7 @@ export default function Navbar() {
                 <span className="font-mono text-[0.6rem] text-ink-400 group-hover:text-primary-500 transition-colors">
                   {link.index}
                 </span>
-                <span>{link.label}</span>
+                <span>{t.nav[link.key]}</span>
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary-600 group-hover:w-full transition-all duration-300 ease-out" />
               </a>
             ))}
@@ -73,6 +75,23 @@ export default function Navbar() {
 
           {/* CTA + Mobile Toggle */}
           <div className="flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-1 p-1 rounded-full border hairline bg-bone-50/60">
+              {(['en', 'id'] as const).map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => setLanguage(option)}
+                  aria-pressed={language === option}
+                  className={`px-2.5 py-1 rounded-full font-mono text-[0.6rem] uppercase transition-colors ${
+                    language === option
+                      ? 'bg-ink-900 text-bone-50'
+                      : 'text-ink-500 hover:text-ink-900'
+                  }`}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
             <a
               href="https://wa.me/6282175495541"
               target="_blank"
@@ -81,12 +100,15 @@ export default function Navbar() {
               className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 bg-ink-900 text-bone-50 text-sm font-medium rounded-full hover:bg-primary-600 transition-colors duration-200"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              Let's Talk
+              {t.nav.letsTalk}
             </a>
             <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden p-2 text-ink-800 hover:text-primary-600 transition-colors"
-              aria-label="Toggle menu"
+              type="button"
+              onClick={() => setMobileOpen((open) => !open)}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-navigation"
+              className="lg:hidden relative z-[60] p-2 text-ink-800 hover:text-primary-600 transition-colors"
+              aria-label={t.nav.toggleMenu}
             >
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
@@ -95,20 +117,34 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="lg:hidden bg-ink-900 border-t border-ink-700 overflow-hidden"
-          >
+      {mobileOpen && (
+        <div
+          id="mobile-navigation"
+          className="relative z-50 lg:hidden w-full max-w-none bg-ink-900 border-t border-ink-700 overflow-hidden pointer-events-auto"
+        >
             <div className="px-6 py-4 flex flex-col gap-0">
+              <div className="flex items-center gap-2 pb-3 mb-1 border-b border-ink-700/60">
+                <span className="label text-ink-400 mr-auto">{t.nav.language}</span>
+                {(['en', 'id'] as const).map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => setLanguage(option)}
+                    aria-pressed={language === option}
+                    className={`px-3 py-1.5 rounded-full font-mono text-[0.65rem] uppercase transition-colors ${
+                      language === option
+                        ? 'bg-primary-600 text-white'
+                        : 'bg-ink-800 text-bone-300'
+                    }`}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
               {navLinks.map((link, i) => (
                 <motion.a
                   key={link.href}
-                  href={isHome ? link.href : `/${link.href}`}
+                  href={isHome ? link.href : `/${language}${link.href}`}
                   onClick={() => handleNavClick(link.href)}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -116,7 +152,7 @@ export default function Navbar() {
                   className="flex items-center gap-3 py-3.5 text-bone-100 font-medium hover:text-primary-400 transition-colors border-b border-ink-700/60"
                 >
                   <span className="font-mono text-[0.65rem] text-ink-400">{link.index}</span>
-                  {link.label}
+                  {t.nav[link.key]}
                 </motion.a>
               ))}
               <motion.a
@@ -128,12 +164,11 @@ export default function Navbar() {
                 transition={{ delay: navLinks.length * 0.05 }}
                 className="mt-4 py-3.5 px-5 bg-primary-600 text-white text-center font-medium rounded-full"
               >
-                Let's Talk
+                {t.nav.letsTalk}
               </motion.a>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </motion.nav>
   );
 }

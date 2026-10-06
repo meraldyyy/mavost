@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import type { Language } from '../i18n';
 
 const SITE_URL = 'https://mavost.id';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.svg`;
@@ -8,6 +9,7 @@ type SEOProps = {
   description: string;
   path: string;
   image?: string;
+  language?: Language;
   structuredData?: Record<string, unknown>;
 };
 
@@ -35,12 +37,29 @@ function setCanonical(url: string) {
   element.href = url;
 }
 
-export default function SEO({ title, description, path, image = DEFAULT_IMAGE, structuredData }: SEOProps) {
+function setAlternate(hreflang: string, url: string) {
+  let element = document.head.querySelector<HTMLLinkElement>(`link[data-mavost-alternate="${hreflang}"]`);
+
+  if (!element) {
+    element = document.createElement('link');
+    element.rel = 'alternate';
+    element.dataset.mavostAlternate = hreflang;
+    document.head.appendChild(element);
+  }
+
+  element.hreflang = hreflang;
+  element.href = url;
+}
+
+export default function SEO({ title, description, path, image = DEFAULT_IMAGE, language, structuredData }: SEOProps) {
   useEffect(() => {
     const url = `${SITE_URL}${path}`;
+    const pathWithoutLanguage = path.replace(/^\/(en|id)(?=\/|$)/, '') || '/';
+    const localizedUrl = (nextLanguage: Language) =>
+      `${SITE_URL}/${nextLanguage}${pathWithoutLanguage === '/' ? '' : pathWithoutLanguage}`;
 
     document.title = title;
-    document.documentElement.lang = 'en';
+    document.documentElement.lang = language ?? document.documentElement.lang ?? 'en';
 
     setMeta('name', 'description', description);
     setMeta('property', 'og:title', title);
@@ -53,6 +72,9 @@ export default function SEO({ title, description, path, image = DEFAULT_IMAGE, s
     setMeta('name', 'twitter:description', description);
     setMeta('name', 'twitter:image', image);
     setCanonical(url);
+    setAlternate('en', localizedUrl('en'));
+    setAlternate('id', localizedUrl('id'));
+    setAlternate('x-default', localizedUrl('en'));
 
     const existingSchema = document.head.querySelector<HTMLScriptElement>('script[data-mavost-schema]');
     existingSchema?.remove();
@@ -67,9 +89,9 @@ export default function SEO({ title, description, path, image = DEFAULT_IMAGE, s
 
     return () => {
       document.head.querySelector<HTMLScriptElement>('script[data-mavost-schema]')?.remove();
+      document.head.querySelectorAll('link[data-mavost-alternate]').forEach((link) => link.remove());
     };
-  }, [description, image, path, structuredData, title]);
+  }, [description, image, language, path, structuredData, title]);
 
   return null;
 }
-

@@ -1,6 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaInstagram, FaLinkedin, FaGithub } from "react-icons/fa";
+import { ArrowUpRight } from 'lucide-react';
+import { useLanguage } from '../i18n';
 
 const socials = [
   { icon: FaInstagram, label: "Instagram", href: "https://instagram.com/mrldyrdh" },
@@ -9,14 +11,17 @@ const socials = [
 ];
 
 const navLinks = [
-  { label: 'Home', href: '#home', index: '/01' },
-  { label: 'Services', href: '#services', index: '/02' },
-  { label: 'Portfolio', href: '#portfolio', index: '/03' },
-  { label: 'Pricing', href: '#pricing', index: '/04' },
-  { label: 'Contact', href: '#contact', index: '/05' },
-];
+  { key: 'home', href: '#home', index: '/01' },
+  { key: 'services', href: '#services', index: '/02' },
+  { key: 'portfolio', href: '#portfolio', index: '/03' },
+  { key: 'pricing', href: '#pricing', index: '/04' },
+  { key: 'contact', href: '#contact', index: '/05' },
+] as const;
 
 export default function Footer() {
+  const { language, t } = useLanguage();
+  const location = useLocation();
+  const isHome = /^\/(en|id)\/?$/.test(location.pathname);
   const currentYear = new Date().getFullYear();
 
   return (
@@ -32,10 +37,10 @@ export default function Footer() {
             className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-8"
           >
             <div className="max-w-3xl">
-              <p className="label text-primary-400 mb-5">/ Let's Work</p>
+              <p className="label text-primary-400 mb-5">/ {t.footer.letsWork}</p>
               <h3 className="font-satoshi font-black text-4xl sm:text-5xl lg:text-7xl text-bone-50 leading-[0.95] tracking-tightest text-balance">
-                Ready to build your{' '}
-                <span className="ink-accent text-primary-400">premium website</span>?
+                {t.footer.headlineBefore}{' '}
+                <span className="ink-accent text-primary-400">{t.footer.headlineAccent}</span>?
               </h3>
             </div>
             <motion.a
@@ -47,8 +52,9 @@ export default function Footer() {
               data-cursor
               className="group shrink-0 inline-flex items-center gap-3 px-7 py-4 bg-primary-600 text-white font-semibold rounded-full hover:bg-primary-500 transition-colors duration-200"
             >
-              Start a Project
+              {t.footer.startProject}
               <span className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center group-hover:rotate-45 transition-transform duration-300">
+                <ArrowUpRight size={16} />
               </span>
             </motion.a>
           </motion.div>
@@ -58,15 +64,14 @@ export default function Footer() {
         <div className="py-14 grid grid-cols-1 md:grid-cols-12 gap-10">
           {/* Brand */}
           <div className="md:col-span-6 space-y-5">
-            <Link to="/" className="flex items-baseline gap-1 group" data-cursor>
+            <Link to={`/${language}`} className="flex items-baseline gap-1 group" data-cursor>
               <span className="font-satoshi font-black text-2xl text-bone-50 tracking-tightest">
                 mavost
               </span>
               <span className="font-mono text-xs text-primary-400">.id</span>
             </Link>
             <p className="text-sm text-bone-300 max-w-sm leading-relaxed">
-              Create, Inspire, Repeat. | A premium web agency helping brands build
-              elite digital experiences that convert.
+              {t.footer.brandDescription}
             </p>
             <div className="flex gap-3">
               {socials.map((s) => (
@@ -88,12 +93,12 @@ export default function Footer() {
 
           {/* Navigation */}
           <div className="md:col-span-3">
-            <p className="label text-bone-500 mb-4">Navigation</p>
+            <p className="label text-bone-500 mb-4">{t.footer.navigation}</p>
             <ul className="space-y-3">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <a
-                    href={link.href}
+                    href={isHome ? link.href : `/${language}${link.href}`}
                     onClick={() => document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' })}
                     data-cursor
                     className="group flex items-center gap-2 text-sm text-bone-300 hover:text-primary-400 transition-colors duration-200"
@@ -101,7 +106,7 @@ export default function Footer() {
                     <span className="font-mono text-[0.6rem] text-bone-500 group-hover:text-primary-500 transition-colors">
                       {link.index}
                     </span>
-                    {link.label}
+                    {t.nav[link.key]}
                   </a>
                 </li>
               ))}
@@ -110,15 +115,15 @@ export default function Footer() {
 
           {/* Contact */}
           <div className="md:col-span-3">
-            <p className="label text-bone-500 mb-4">Contact</p>
+            <p className="label text-bone-500 mb-4">{t.footer.contact}</p>
             <ul className="space-y-3">
               <li>
                 <a
-                  href="mailto:ajkdal@gmail.com"
+                  href="mailto:wearemavost@gmail.com"
                   data-cursor
                   className="text-sm text-bone-300 hover:text-primary-400 transition-colors duration-200"
                 >
-                  meraldyridho@gmail.com
+                  wearemavost@gmail.com
                 </a>
               </li>
               <li>
@@ -133,7 +138,7 @@ export default function Footer() {
                 </a>
               </li>
               <li className="pt-2">
-                <p className="label text-bone-500">Depok / Remote</p>
+                <p className="label text-bone-500">{t.footer.remote}</p>
                 <p className="label text-bone-500 mt-1">N 6.12 / E 106.49</p>
               </li>
             </ul>
@@ -143,10 +148,10 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="py-6 border-t border-bone-50/10 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-bone-500">
-            &copy; {currentYear} mavost.id | All rights reserved.
+            &copy; {currentYear} mavost.id | {t.footer.rights}
           </p>
           <p className="text-xs text-bone-500">
-            Built with care by{' '}
+            {t.footer.builtWith}{' '}
             <span className="text-bone-300">Meraldy Ridho Fadillah</span>
           </p>
         </div>

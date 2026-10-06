@@ -2,13 +2,7 @@ import { useRef } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ArrowDown } from 'lucide-react';
-
-const marqueeItems = [
-  'Landing Pages',
-  'Company Profiles',
-  'Personal Branding',
-  'Website Redesign',
-];
+import { useLanguage } from '../i18n';
 
 function MagneticButton({
   children,
@@ -76,6 +70,7 @@ const itemVariants = {
 };
 
 export default function Hero() {
+  const { language, t } = useLanguage();
   const handleScrollToContact = () => {
     document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -91,13 +86,13 @@ export default function Hero() {
           className="flex items-center justify-between border-t hairline pt-4"
         >
           <span className="label text-ink-500 hidden sm:block">
-            [ Depok / Remote Studio ]
+            {t.hero.location}
           </span>
           <span className="label text-ink-500">
-            Est. 2024 — Web Design & Development
+            {t.hero.established}
           </span>
           <span className="label text-ink-500 hidden md:block">
-            N 6.12 / E 106.49
+            {t.hero.coordinates}
           </span>
         </motion.div>
       </div>
@@ -114,7 +109,7 @@ export default function Hero() {
           <motion.div variants={itemVariants} className="flex items-center gap-3 mb-7">
             <span className="label text-primary-600">/ 01 — Intro</span>
             <span className="h-px w-10 bg-ink-300" />
-            <span className="label text-ink-500">Mavost Design Studio</span>
+            <span className="label text-ink-500">{t.hero.studio}</span>
           </motion.div>
 
           {/* Headline */}
@@ -123,10 +118,10 @@ export default function Hero() {
               variants={itemVariants}
               className="lg:col-span-9 font-satoshi font-black text-[13vw] sm:text-[11vw] lg:text-[8.5vw] xl:text-[7.8vw] leading-[0.92] tracking-tightest text-ink-900 text-balance"
             >
-              Web Design &amp; Development
+              {t.hero.headlineBefore}
               <br />
               <span className="inline-block">
-                for <span className="ink-accent">ambitious brands</span>
+                {t.hero.headlineMiddle}{' '}<span className="ink-accent">{t.hero.headlineAccent}</span>
                 <span className="text-primary-600">.</span>
               </span>
             </motion.h1>
@@ -134,8 +129,7 @@ export default function Hero() {
             {/* Right column — description */}
             <motion.div variants={itemVariants} className="lg:col-span-3 lg:pl-4 lg:pb-3">
               <p className="text-base text-ink-600 leading-relaxed max-w-xs">
-                Mavost builds high-performance websites for businesses, creators, and brands
-                that refuse to look like everyone else.
+                {t.hero.description}
               </p>
             </motion.div>
           </div>
@@ -149,7 +143,7 @@ export default function Hero() {
               className="group inline-flex items-center gap-3 pl-7 pr-5 py-4 bg-ink-900 text-bone-50 font-medium rounded-full hover:bg-primary-600 transition-colors duration-300 cursor-pointer"
               onClick={handleScrollToContact}
             >
-              <span>Start a Project</span>
+              <span>{t.hero.startProject}</span>
               <span className="w-8 h-8 rounded-full bg-bone-50/10 flex items-center justify-center group-hover:rotate-45 transition-transform duration-300">
                 <ArrowUpRight size={16} />
               </span>
@@ -157,10 +151,10 @@ export default function Hero() {
 
             <MagneticButton
               className="cursor-pointer group"
-              href="/work"
+              href={`/${language}/work`}
             >
               <div className="inline-flex items-center gap-2 px-7 py-4 border hairline text-ink-800 font-medium rounded-full hover:border-ink-900 hover:bg-ink-900 hover:text-bone-50 transition-all duration-300">
-                See Recent Work
+                {t.hero.recentWork}
                 <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
             </MagneticButton>
@@ -175,7 +169,7 @@ export default function Hero() {
           <div className="flex animate-marquee">
             {[0, 1].map((dup) => (
               <div key={dup} className="marquee-track shrink-0">
-                {marqueeItems.map((item, i) => (
+                {t.hero.marquee.map((item, i) => (
                   <span key={`${dup}-${i}`} className="flex items-center gap-6 px-6">
                     <span className="font-satoshi font-black text-2xl lg:text-3xl tracking-tight">
                       {item}
@@ -196,7 +190,7 @@ export default function Hero() {
         transition={{ delay: 1.1, duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute bottom-28 right-6 lg:right-10 hidden md:flex flex-col items-center gap-2 text-ink-400"
       >
-        <span className="label rotate-90 origin-center mb-6">Scroll</span>
+        <span className="label rotate-90 origin-center mb-6">{t.hero.scroll}</span>
         <ArrowDown size={16} />
       </motion.div>
     </section>

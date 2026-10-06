@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Check, ArrowUpRight } from 'lucide-react';
+import { useLanguage } from '../i18n';
 
 const plans = [
   {
@@ -56,6 +57,8 @@ function PricingCard({
   plan: (typeof plans)[number];
   index: number;
 }) {
+  const { t } = useLanguage();
+  const copy = t.pricing.plans[index];
   const handleCTA = () => {
     document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -75,11 +78,11 @@ function PricingCard({
       {/* Top row: index + highlight marker */}
       <div className="flex items-center justify-between mb-8">
         <span className={`label ${plan.highlight ? 'text-primary-400' : 'text-ink-400'}`}>
-          {plan.index} — {plan.name}
+          {plan.index} — {copy.name}
         </span>
         {plan.highlight && (
           <span className="flex items-center gap-1.5 px-3 py-1 bg-primary-600 text-white text-[0.65rem] font-bold rounded-full uppercase tracking-wider">
-            Popular
+            {t.pricing.popular}
           </span>
         )}
       </div>
@@ -99,7 +102,7 @@ function PricingCard({
           </span>
         </div>
         <p className={`text-sm mt-4 leading-relaxed ${plan.highlight ? 'text-bone-300' : 'text-ink-500'}`}>
-          {plan.description}
+          {copy.description}
         </p>
       </div>
 
@@ -108,7 +111,7 @@ function PricingCard({
 
       {/* Features */}
       <ul className="space-y-3 mb-8 flex-1">
-        {plan.features.map((feature) => (
+        {copy.features.map((feature) => (
           <li key={feature} className="flex items-center gap-3">
             <div
               className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
@@ -138,7 +141,7 @@ function PricingCard({
             : 'bg-ink-900 text-bone-50 hover:bg-primary-600'
         }`}
       >
-        {plan.cta}
+        {copy.cta}
         <ArrowUpRight size={16} className="group-hover:rotate-45 transition-transform duration-300" />
       </button>
     </motion.div>
@@ -146,6 +149,7 @@ function PricingCard({
 }
 
 export default function Pricing() {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -162,19 +166,18 @@ export default function Pricing() {
         >
           <div className="lg:col-span-7">
             <div className="flex items-center gap-3 mb-6">
-              <span className="label text-primary-600">/ 05 — Pricing</span>
+              <span className="label text-primary-600">/ 05 — {t.pricing.label}</span>
               <span className="h-px w-10 bg-ink-300" />
             </div>
             <h2 className="font-satoshi font-black text-4xl lg:text-6xl text-ink-900 leading-[0.95] tracking-tightest text-balance">
-              Transparent pricing,
+              {t.pricing.headlineBefore}
               <br />
-              <span className="ink-accent">premium value</span>.
+              <span className="ink-accent">{t.pricing.headlineAccent}</span>.
             </h2>
           </div>
           <div className="lg:col-span-4 lg:col-start-9 flex items-end">
             <p className="text-base text-ink-600 leading-relaxed">
-              Every package includes our full attention, premium craftsmanship, and
-              post-launch support. No hidden fees.
+              {t.pricing.description}
             </p>
           </div>
         </motion.div>
@@ -194,13 +197,13 @@ export default function Pricing() {
           transition={{ delay: 0.4 }}
           className="text-center text-sm text-ink-500 mt-10"
         >
-          All prices are starting prices. Final quote depends on project scope.{' '}
+          {t.pricing.note}{' '}
           <a
             href="#contact"
             onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
             className="text-primary-600 hover:underline font-medium cursor-pointer"
           >
-            Get a custom quote
+            {t.pricing.customQuote}
           </a>
         </motion.p>
       </div>

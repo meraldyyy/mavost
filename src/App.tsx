@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Navigate, Routes, Route, useLocation, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Home from './pages/Home';
 import RecentWork from './pages/RecentWork';
@@ -18,6 +18,21 @@ function PageTransition({ children }: { children: React.ReactNode }) {
       {children}
     </motion.div>
   );
+}
+
+function LocalizedRoute({ children }: { children: React.ReactNode }) {
+  const { lang } = useParams<{ lang: string }>();
+
+  if (lang !== 'en' && lang !== 'id') {
+    return <Navigate to="/en" replace />;
+  }
+
+  return <PageTransition>{children}</PageTransition>;
+}
+
+function LegacyProjectRedirect() {
+  const { slug } = useParams<{ slug: string }>();
+  return <Navigate to={`/en/work/${slug ?? ''}`} replace />;
 }
 
 export default function App() {
@@ -39,30 +54,12 @@ export default function App() {
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          <Route
-            path="/"
-            element={
-              <PageTransition>
-                <Home />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="/work"
-            element={
-              <PageTransition>
-                <RecentWork />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="/work/:slug"
-            element={
-              <PageTransition>
-                <ProjectDetail />
-              </PageTransition>
-            }
-          />
+          <Route path="/" element={<Navigate to="/en" replace />} />
+          <Route path="/work" element={<Navigate to="/en/work" replace />} />
+          <Route path="/work/:slug" element={<LegacyProjectRedirect />} />
+          <Route path="/:lang" element={<LocalizedRoute><Home /></LocalizedRoute>} />
+          <Route path="/:lang/work" element={<LocalizedRoute><RecentWork /></LocalizedRoute>} />
+          <Route path="/:lang/work/:slug" element={<LocalizedRoute><ProjectDetail /></LocalizedRoute>} />
         </Routes>
       </AnimatePresence>
     </>

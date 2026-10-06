@@ -5,30 +5,34 @@ import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO';
-import { projects } from '../projects';
+import { getLocalizedProject, projects } from '../projects';
+import { useLanguage } from '../i18n';
 
-const categories = ['All', 'Landing Page', 'Company Profile', 'Personal Branding', 'Website Redesign'];
+const categories = ['all', 'Landing Page', 'Company Profile', 'Personal Branding', 'Website Redesign'] as const;
 
 export default function RecentWork() {
-  const [activeFilter, setActiveFilter] = useState('All');
+  const { language, t } = useLanguage();
+  const [activeFilter, setActiveFilter] = useState<(typeof categories)[number]>('all');
 
   const filtered =
-    activeFilter === 'All'
+    activeFilter === 'all'
       ? projects
       : projects.filter((p) => p.category === activeFilter);
+  const localizedFiltered = filtered.map((project) => getLocalizedProject(project, language));
 
   return (
     <div className="relative min-h-screen bg-bone-100">
       <SEO
-        title="Recent Work | Mavost Web Design & Development"
-        description="Explore selected landing pages, company profiles, and personal branding websites designed and developed by Mavost."
-        path="/work"
+        title={`${t.work.headlineBefore} ${t.work.headlineAccent} | Mavost`}
+        description={t.work.description}
+        path={`/${language}/work`}
+        language={language}
         structuredData={{
           '@context': 'https://schema.org',
           '@type': 'CollectionPage',
           name: 'Recent Work | Mavost',
           description: 'Selected web design and development projects by Mavost.',
-          url: 'https://mavost.id/work',
+          url: `https://mavost.id/${language}/work`,
           isPartOf: {
             '@type': 'WebSite',
             name: 'Mavost',
@@ -42,11 +46,11 @@ export default function RecentWork() {
       <section className="pt-28 lg:pt-36 pb-12 bg-bone-100">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
           <Link
-            to="/"
+            to={`/${language}`}
             className="inline-flex items-center gap-2 text-sm text-ink-600 hover:text-primary-600 transition-colors duration-200 mb-10 group"
           >
             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform duration-200" />
-            Back to Home
+            {t.work.backHome}
           </Link>
 
           <motion.div
@@ -57,19 +61,18 @@ export default function RecentWork() {
           >
             <div className="lg:col-span-9">
               <div className="flex items-center gap-3 mb-6">
-                <span className="label text-primary-600">/ Portfolio</span>
+                <span className="label text-primary-600">/ {t.work.label}</span>
                 <span className="h-px w-10 bg-ink-300" />
               </div>
               <h1 className="font-satoshi font-black text-5xl sm:text-6xl lg:text-7xl text-ink-900 leading-[0.92] tracking-tightest text-balance">
-                Our Recent{' '}
-                <span className="ink-accent">Work</span>
+                {t.work.headlineBefore}{' '}
+                <span className="ink-accent">{t.work.headlineAccent}</span>
                 <span className="text-primary-600">.</span>
               </h1>
             </div>
             <div className="lg:col-span-3">
               <p className="text-base text-ink-600 leading-relaxed">
-                A curated selection of projects that showcase our commitment to
-                premium design, performance, and conversion-focused development.
+                {t.work.description}
               </p>
             </div>
           </motion.div>
@@ -84,7 +87,7 @@ export default function RecentWork() {
           transition={{ delay: 0.2 }}
           className="flex flex-wrap gap-2"
         >
-          {categories.map((cat) => (
+          {categories.map((cat, index) => (
             <button
               key={cat}
               onClick={() => setActiveFilter(cat)}
@@ -95,7 +98,7 @@ export default function RecentWork() {
                   : 'bg-bone-50 border hairline text-ink-700 hover:border-ink-900/40 hover:text-primary-600'
               }`}
             >
-              {cat}
+              {t.work.categories[index]}
             </button>
           ))}
         </motion.div>
@@ -112,10 +115,10 @@ export default function RecentWork() {
             transition={{ duration: 0.3 }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-5 auto-rows-[minmax(0,1fr)]"
           >
-            {filtered.map((project) => (
+            {localizedFiltered.map((project) => (
               <Link
                 key={project.id}
-                to={`/work/${project.slug}`}
+                to={`/${language}/work/${project.slug}`}
                 data-cursor
                 className={`group relative ${project.span} block overflow-hidden rounded-2xl bg-ink-900 cursor-pointer`}
               >
@@ -162,7 +165,7 @@ export default function RecentWork() {
 
         {filtered.length === 0 && (
           <div className="text-center py-20 text-ink-400">
-            No projects in this category yet.
+            {t.work.empty}
           </div>
         )}
       </main>

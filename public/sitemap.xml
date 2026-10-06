@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://mavost.id/</loc>
+    <loc>https://mavost.id/en</loc>
   </url>
   <url>
-    <loc>https://mavost.id/work</loc>
+    <loc>https://mavost.id/id</loc>
+  </url>
+  <url>
+    <loc>https://mavost.id/en/work</loc>
+  </url>
+  <url>
+    <loc>https://mavost.id/id/work</loc>
   </url>
 </urlset>
