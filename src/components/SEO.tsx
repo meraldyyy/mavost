@@ -3,6 +3,7 @@ import type { Language } from '../i18n';
 
 const SITE_URL = 'https://mavost.id';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.svg`;
+const SEO_KEYWORDS = 'Mavost, Mavost ID, Jasa Pembuatan Website, Web Developer Indonesia, Jasa Desain Web, Frontend Developer, Fullstack Web Development, Solusi Digital Bisnis, Portofolio Web Developer';
 
 type SEOProps = {
   title: string;
@@ -62,6 +63,8 @@ export default function SEO({ title, description, path, image = DEFAULT_IMAGE, l
     document.documentElement.lang = language ?? document.documentElement.lang ?? 'en';
 
     setMeta('name', 'description', description);
+    setMeta('name', 'keywords', SEO_KEYWORDS);
+    setMeta('name', 'author', 'Mavost');
     setMeta('property', 'og:title', title);
     setMeta('property', 'og:description', description);
     setMeta('property', 'og:url', url);
