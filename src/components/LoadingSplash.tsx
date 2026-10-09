@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Zap } from 'lucide-react';
 
 export default function LoadingSplash({ onComplete }: { onComplete: () => void }) {
   const [count, setCount] = useState(0);
@@ -37,9 +36,9 @@ export default function LoadingSplash({ onComplete }: { onComplete: () => void }
           initial={{ scale: 0.6, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-          className="w-14 h-14 rounded-2xl bg-ink-900 flex items-center justify-center shadow-lg"
+          className="w-14 h-14 rounded-2xl overflow-hidden shadow-lg"
         >
-          <Zap className="text-primary-500" size={26} />
+          <img src="/mavost-favicon.png" alt="Mavost" className="w-full h-full object-cover" />
         </motion.div>
 
         {/* Brand */}
