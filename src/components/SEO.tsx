@@ -3,7 +3,7 @@ import type { Language } from '../i18n';
 
 const SITE_URL = 'https://mavost.id';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.svg`;
-const SEO_KEYWORDS = 'Mavost, Mavost ID, Jasa Pembuatan Website, Web Developer Indonesia, Jasa Desain Web, Frontend Developer, Fullstack Web Development, Solusi Digital Bisnis, Portofolio Web Developer';
+const SEO_KEYWORDS = 'Mavost, Mavost ID, Website Depok, Jasa Website Depok, Web Developer Depok, Jasa Web Murah, Web Depok Murah, Solusi Digital Bisnis';
 
 type SEOProps = {
   title: string;
@@ -11,7 +11,7 @@ type SEOProps = {
   path: string;
   image?: string;
   language?: Language;
-  structuredData?: Record<string, unknown>;
+  structuredData?: Record<string, unknown>; 
 };
 
 function setMeta(attribute: 'name' | 'property', key: string, content: string) {
